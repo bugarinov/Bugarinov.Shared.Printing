@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32901.82
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bugarinov.Shared.Printing", "Bugarinov.Shared.Printing.shproj", "{8FBD28EE-950A-4B0B-88D3-F36485367646}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Bugarinov.Shared.Printing.projitems*{8fbd28ee-950a-4b0b-88d3-f36485367646}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {252A2B1C-2421-4AD3-ACDC-92BC5FDAFF9C}
+	EndGlobalSection
+EndGlobal
