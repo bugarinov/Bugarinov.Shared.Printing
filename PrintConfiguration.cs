@@ -1,6 +1,7 @@
 ﻿using Bugarinov.Shared.Common.Core;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Printing;
 
@@ -8,6 +9,8 @@ namespace Bugarinov.Shared.Printing
 {
     public class PrintConfiguration : ObservableObject
     {
+        private string ConfigFile;
+
         public IEnumerable<string> Printers { get; }
         public PaperSize[] PaperSizes { get; }
         public Orientation[] Orientations { get; }
@@ -59,6 +62,7 @@ namespace Bugarinov.Shared.Printing
         }
 
 
+        
 
         public PrintConfiguration()
         {
@@ -112,8 +116,44 @@ namespace Bugarinov.Shared.Printing
             Copies = 1;
         }
 
-        public virtual void Read() { }
+        public void SetConfigFile(string configFile)
+        {
+            ConfigFile = configFile;
+        }
 
-        public virtual void Write() { }
+        public void Read()
+        {
+            SelectedPrinter = null;
+            SelectedPaper = null;
+            SelectedOrientation = null;
+
+            if (File.Exists(ConfigFile))
+            {
+                string[] settings = File.ReadAllLines(ConfigFile);
+
+                string defaultPrinter = settings.Length > 0 ? settings[0] : null;
+                string defaultPaper = settings.Length > 1 ? settings[1] : null;
+                string defaultOrientation = settings.Length > 2 ? settings[2] : null;
+
+                SelectedPrinter = defaultPrinter;
+                SelectedPaper = PaperSizes.FirstOrDefault(x => x.Name.Equals(defaultPaper));
+                SelectedOrientation = Orientations.FirstOrDefault(x => x.Name.Equals(defaultOrientation));
+            }
+        }
+
+        public void Write()
+        {
+            if (File.Exists(ConfigFile))
+            {
+                File.Delete(ConfigFile);
+            }
+
+            File.WriteAllLines(ConfigFile, new string[]
+            {
+                SelectedPrinter,
+                SelectedPaper?.Name,
+                SelectedOrientation?.Name
+            });
+        }
     }
 }
