@@ -12,15 +12,10 @@ namespace Bugarinov.Shared.Printing
         public double PrintableAreaWidth => PrintDialog?.PrintableAreaWidth ?? 0;
         public double PrintableAreaHeight => PrintDialog?.PrintableAreaHeight ?? 0;
 
-        public PrintingManager()
-        {
-
-        }
-
         public void Init(
             string selectedPrinter,
             PaperSize paperSize,
-            PageOrientation orientation,
+            Orientation orientation,
             int copies = 1)
         {
             string[] printer = ExtractPrinter(selectedPrinter);
@@ -32,7 +27,7 @@ namespace Bugarinov.Shared.Printing
                 CopyCount = copies,
                 PageMediaSize = new PageMediaSize(paperSize.PageMediaSizeName, paperSize.Width, paperSize.Height),
                 PageMediaType = PageMediaType.None,
-                PageOrientation = orientation
+                PageOrientation = orientation.PageOrientation
             };
 
             PrintDialog = new PrintDialog()
