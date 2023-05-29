@@ -9,7 +9,7 @@ namespace Bugarinov.Shared.Printing
 {
     public class PrintConfiguration : ObservableObject
     {
-        private string ConfigFile;
+        private readonly string ConfigFile;
 
         public IEnumerable<string> Printers { get; }
         public PaperSize[] PaperSizes { get; }
@@ -64,11 +64,13 @@ namespace Bugarinov.Shared.Printing
 
         
 
-        public PrintConfiguration()
+        public PrintConfiguration(string configFile, params PaperSize[] additionalPaperSizes)
         {
+            ConfigFile = configFile;
+
             Printers = PrinterSettings.InstalledPrinters.Cast<string>();
 
-            PaperSizes = new PaperSize[]
+            List<PaperSize> basicPapers = new List<PaperSize>()
             {
                 new PaperSize()
                 {
@@ -86,6 +88,13 @@ namespace Bugarinov.Shared.Printing
                 },
                 new PaperSize()
                 {
+                    Name = "Legal (8.5x14)",
+                    PageMediaSizeName = PageMediaSizeName.NorthAmericaLegal,
+                    Width = 816,
+                    Height = 1344
+                },
+                new PaperSize()
+                {
                     Name = "Folio (8.5x13)",
                     PageMediaSizeName = PageMediaSizeName.OtherMetricFolio,
                     Width = 816,
@@ -93,19 +102,14 @@ namespace Bugarinov.Shared.Printing
                 },
                 new PaperSize()
                 {
-                    Name = "Half-Folio Lengthwise (4.25x13)",
-                    PageMediaSizeName = PageMediaSizeName.Unknown,
-                    Width = 816,
-                    Height = 1248
-                },
-                new PaperSize()
-                {
-                    Name = "Legal (8.5x14)",
-                    PageMediaSizeName = PageMediaSizeName.NorthAmericaLegal,
-                    Width = 816,
-                    Height = 1344
+                    Name = "US Envelope #10 (4.125x9.5)",
+                    PageMediaSizeName = PageMediaSizeName.NorthAmericaNumber10Envelope,
+                    Width = 396,
+                    Height = 912
                 },
             };
+
+            PaperSizes =  basicPapers.Concat(additionalPaperSizes).ToArray();
 
             Orientations = new Orientation[]
             {
@@ -114,11 +118,6 @@ namespace Bugarinov.Shared.Printing
             };
 
             Copies = 1;
-        }
-
-        public void SetConfigFile(string configFile)
-        {
-            ConfigFile = configFile;
         }
 
         public void Read()
@@ -143,17 +142,25 @@ namespace Bugarinov.Shared.Printing
 
         public void Write()
         {
-            if (File.Exists(ConfigFile))
+            try
             {
-                File.Delete(ConfigFile);
-            }
+                if (File.Exists(ConfigFile))
+                {
+                    File.Delete(ConfigFile);
+                }
 
-            File.WriteAllLines(ConfigFile, new string[]
+                File.WriteAllLines(ConfigFile, new string[]
+                {
+                    SelectedPrinter,
+                    SelectedPaper?.Name,
+                    SelectedOrientation?.Name
+                });
+            }
+            catch
             {
-                SelectedPrinter,
-                SelectedPaper?.Name,
-                SelectedOrientation?.Name
-            });
+
+            }
+            
         }
     }
 }
