@@ -16,7 +16,8 @@ namespace Bugarinov.Shared.Printing
             string selectedPrinter,
             PaperSize paperSize,
             Orientation orientation,
-            int copies = 1)
+            int copies = 1,
+            PrintMode printMode = null)
         {
             string[] printer = ExtractPrinter(selectedPrinter);
             string printerHost = printer[0];
@@ -27,7 +28,8 @@ namespace Bugarinov.Shared.Printing
                 CopyCount = copies,
                 PageMediaSize = new PageMediaSize(paperSize.PageMediaSizeName, paperSize.Width, paperSize.Height),
                 PageMediaType = PageMediaType.None,
-                PageOrientation = orientation.PageOrientation
+                PageOrientation = orientation.PageOrientation,
+                Duplexing = printMode?.Duplexing ?? Duplexing.OneSided
             };
 
             PrintDialog = new PrintDialog()
