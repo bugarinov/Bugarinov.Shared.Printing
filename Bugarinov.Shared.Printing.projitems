@@ -13,5 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)PaperSize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrintConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrintingManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PrintMode.cs" />
   </ItemGroup>
 </Project>
