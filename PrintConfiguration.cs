@@ -12,6 +12,7 @@ namespace Bugarinov.Shared.Printing
         private readonly string ConfigFile;
 
         public IEnumerable<string> Printers { get; }
+        public PrintMode[] PrintModes { get; set; }
         public PaperSize[] PaperSizes { get; }
         public Orientation[] Orientations { get; }
 
@@ -50,6 +51,18 @@ namespace Bugarinov.Shared.Printing
             }
         }
 
+
+        private PrintMode SelectedPrintMode_;
+        public PrintMode SelectedPrintMode
+        {
+            get => SelectedPrintMode_;
+            set
+            {
+                SelectedPrintMode_ = value;
+                RaisePropertyChangedEvent(nameof(SelectedPrintMode));
+            }
+        }
+
         private int Copies_;
         public int Copies
         {
@@ -62,8 +75,8 @@ namespace Bugarinov.Shared.Printing
         }
 
 
-        
 
+        
         public PrintConfiguration(string configFile, params PaperSize[] additionalPaperSizes)
         {
             ConfigFile = configFile;
@@ -117,6 +130,15 @@ namespace Bugarinov.Shared.Printing
                 new Orientation() { Name = "Landscape", PageOrientation = PageOrientation.Landscape },
             };
 
+            PrintModes = new PrintMode[]
+            {
+                new PrintMode() { Name = "Per Page", Duplexing = Duplexing.OneSided },
+                new PrintMode() { Name = "All", Duplexing = Duplexing.OneSided },
+                new PrintMode() { Name = "Duplex", Duplexing = Duplexing.TwoSidedLongEdge }
+            };
+
+            SelectedPrintMode = PrintModes.FirstOrDefault();
+
             Copies = 1;
         }
 
@@ -133,10 +155,12 @@ namespace Bugarinov.Shared.Printing
                 string defaultPrinter = settings.Length > 0 ? settings[0] : null;
                 string defaultPaper = settings.Length > 1 ? settings[1] : null;
                 string defaultOrientation = settings.Length > 2 ? settings[2] : null;
+                string printMode = settings.Length > 3 ? settings[3] : null;
 
                 SelectedPrinter = defaultPrinter;
                 SelectedPaper = PaperSizes.FirstOrDefault(x => x.Name.Equals(defaultPaper));
                 SelectedOrientation = Orientations.FirstOrDefault(x => x.Name.Equals(defaultOrientation));
+                SelectedPrintMode = PrintModes.FirstOrDefault(x => x.Name.Equals(printMode)) ?? PrintModes.First();
             }
         }
 
@@ -153,7 +177,8 @@ namespace Bugarinov.Shared.Printing
                 {
                     SelectedPrinter,
                     SelectedPaper?.Name,
-                    SelectedOrientation?.Name
+                    SelectedOrientation?.Name,
+                    SelectedPrintMode.Name
                 });
             }
             catch
